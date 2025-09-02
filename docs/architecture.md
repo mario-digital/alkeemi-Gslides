@@ -74,13 +74,13 @@ graph TB
 
 | Category | Technology | Version | Purpose | Rationale |
 |----------|------------|---------|---------|-----------|
-| **Runtime & Package Manager** | **Bun** | **1.x** | **JS runtime and package manager** | **Ultra-fast installs, native TypeScript, built-in bundler** |
-| Frontend Language | TypeScript | 5.x | Type safety for complex JSON structures | Critical for batchUpdate JSON validation and IDE support |
-| Frontend Framework | Next.js | 14.x | React framework with SSG | Perfect for client-side apps with excellent DX |
-| UI Component Library | shadcn/ui | Latest | Modern, accessible components | Requested modern look with excellent customization |
-| CSS Framework | Tailwind CSS | 3.x | Utility-first styling | Specified in PRD, works perfectly with shadcn/ui |
-| State Management | Zustand | 4.x | Lightweight state for batchUpdate JSON | Simple, TypeScript-friendly state for complex JSON objects |
-| JSON Schema Validation | Zod | 3.x | Runtime validation of batchUpdate | Ensures exported JSON matches Google Slides API spec |
+| **Runtime & Package Manager** | **Bun** | **1.2.21** | **JS runtime and package manager** | **Ultra-fast installs, native TypeScript, built-in bundler** |
+| Frontend Language | TypeScript | 5.9.2 | Type safety for complex JSON structures | Critical for batchUpdate JSON validation and IDE support |
+| Frontend Framework | Next.js | 15.5 | React framework with SSG | Perfect for client-side apps with excellent DX |
+| UI Component Library | shadcn/ui | CLI 3.0 | Modern, accessible components | Requested modern look with excellent customization |
+| CSS Framework | Tailwind CSS | 4.1 | Utility-first styling | Specified in PRD, works perfectly with shadcn/ui |
+| State Management | Zustand | 5.0.8 | Lightweight state for batchUpdate JSON | Simple, TypeScript-friendly state for complex JSON objects |
+| JSON Schema Validation | Zod | 4.1.5 | Runtime validation of batchUpdate | Ensures exported JSON matches Google Slides API spec |
 | File Operations | Browser File System API | Native | Import/export JSON and MD | Native browser APIs for client-side file operations |
 | Frontend Testing | **Bun Test** | **Built-in** | **Fast native testing** | **Bun's built-in test runner - faster than Vitest** |
 | E2E Testing | Playwright | Latest | End-to-end testing | Test complete import/export workflows |
@@ -177,6 +177,83 @@ interface BatchUpdateAPI {
   exportToJSON(): BatchUpdateRequest[];
   exportToMarkdown(filename: string): string;
 }
+```
+
+### Sample Markdown Export
+
+When a user exports a configuration as a Markdown (.md) file, the exported file must include:
+
+- A summary/header
+- Optional slide title/description fields (user-editable)
+- The full Google Slides batchUpdate JSON block in a fenced code block
+
+This format ensures all exported Markdown files are consistent, easily auditable, and can be shared or versioned by other developers or stakeholders.
+
+**Sample Markdown Export:**
+
+```markdown
+# Alkemy GSlide Export (2025-09-01)
+
+## Slide Title: [User enters title here]
+## Slide Description: [Optional user input]
+
+## Google Slides batchUpdate JSON
+
+```json
+[
+  {
+    "createShape": {
+      "objectId": "slide_18_journey_container",
+      "shapeType": "RECTANGLE",
+      "elementProperties": {
+        "pageObjectId": "slide_18",
+        "size": {
+          "width": {"magnitude": 450, "unit": "PT"},
+          "height": {"magnitude": 90, "unit": "PT"}
+        },
+        "transform": {
+          "scaleX": 1,
+          "scaleY": 1,
+          "translateX": 37.5,
+          "translateY": 90,
+          "unit": "PT"
+        }
+      }
+    }
+  },
+  {
+    "updateShapeProperties": {
+      "objectId": "slide_18_journey_container",
+      "shapeProperties": {
+        "shapeBackgroundFill": {
+          "solidFill": {
+            "color": {
+              "rgbColor": {"red": 0.976, "green": 0.98, "blue": 0.984}
+            }
+          }
+        },
+        "outline": {
+          "outlineFill": {
+            "solidFill": {
+              "color": {
+                "rgbColor": {"red": 0.42, "green": 0.447, "blue": 0.502}
+              }
+            }
+          },
+          "weight": {"magnitude": 2, "unit": "PT"}
+        }
+      },
+      "fields": "shapeBackgroundFill,outline"
+    }
+  }
+  // ...additional requests as needed
+]
+```
+
+---
+
+**Summary:**  
+*This section guarantees that everyone—dev, PM, or stakeholder—knows the exact, required Markdown export format for Alkemy GSlide, and how exported files should look every time.*
 ```
 
 ## Components
