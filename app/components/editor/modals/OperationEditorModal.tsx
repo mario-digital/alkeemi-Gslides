@@ -99,7 +99,9 @@ export function OperationEditorModal({
             {/* Header */}
             <div className="flex items-center justify-between">
               <h2 id="modal-title" className="text-2xl font-bold text-white">
-                {operation ? `Edit Operation #${(operationIndex || 0) + 1}` : 'New Operation'}
+                {operation ? 
+                  (operationType.includes('update') ? 'Update Element' : `Edit Operation #${(operationIndex || 0) + 1}`) 
+                  : 'New Operation'}
               </h2>
               <button
                 onClick={onClose}

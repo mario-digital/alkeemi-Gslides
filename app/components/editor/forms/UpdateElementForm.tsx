@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { NeonColorPicker } from '@/components/ui/neon-color-picker'
 import { AutoCompleteField } from '../modals/AutoCompleteField'
-import { BatchUpdateRequest } from '@/types/batch-update'
+import { BatchUpdateRequest, BatchUpdateOperation } from '@/types/batch-update'
 
 interface UpdateElementFormProps {
   operation?: BatchUpdateRequest
@@ -13,8 +13,23 @@ interface UpdateElementFormProps {
   onCancel: () => void
 }
 
-export function UpdateElementForm({ onSave, onCancel }: UpdateElementFormProps) {
-  const [objectId, setObjectId] = useState('')
+export function UpdateElementForm({ operation, onSave, onCancel }: UpdateElementFormProps) {
+  // Extract element data from the operation prop
+  const getInitialData = () => {
+    if (!operation) {
+      return { objectId: '', shapeType: '', text: '' }
+    }
+    const opType = Object.keys(operation)[0]
+    const opData = (operation as any)[opType]
+    return {
+      objectId: opData?.objectId || '',
+      shapeType: opData?.shapeType || '',
+      text: opData?.text || ''
+    }
+  }
+  
+  const initialData = getInitialData()
+  const [objectId, setObjectId] = useState(initialData.objectId)
   const [updateType, setUpdateType] = useState('updateShapeProperties')
   const [fields, setFields] = useState<string[]>(['shapeBackgroundFill'])
   const [backgroundColor, setBackgroundColor] = useState('#00ffff')
@@ -49,10 +64,10 @@ export function UpdateElementForm({ onSave, onCancel }: UpdateElementFormProps) 
     
     if (!validateForm()) return
     
-    let newOperation: BatchUpdateRequest = {}
+    let newOperation: BatchUpdateOperation = {} as BatchUpdateOperation
     
     if (updateType === 'updateShapeProperties') {
-      const shapeProperties: any = {}
+      const shapeProperties: Record<string, unknown> = {}
       
       if (fields.includes('shapeBackgroundFill')) {
         const rgb = hexToRgb(backgroundColor)
@@ -98,7 +113,7 @@ export function UpdateElementForm({ onSave, onCancel }: UpdateElementFormProps) 
         }
       }
     } else if (updateType === 'updateTextStyle') {
-      const textStyle: any = {}
+      const textStyle: Record<string, unknown> = {}
       
       if (fields.includes('fontSize')) {
         textStyle.fontSize = {
@@ -154,6 +169,20 @@ export function UpdateElementForm({ onSave, onCancel }: UpdateElementFormProps) 
         </div>
       )}
 
+      {/* Show selected element info */}
+      {initialData.objectId && (
+        <div className="bg-cyan-500/10 border border-cyan-500/50 rounded-lg p-4">
+          <h4 className="text-cyan-400 font-medium mb-2">Updating Element</h4>
+          <p className="text-cyan-300 text-sm">Object ID: {initialData.objectId}</p>
+          {initialData.shapeType && (
+            <p className="text-cyan-300 text-sm">Type: {initialData.shapeType}</p>
+          )}
+          {initialData.text && (
+            <p className="text-cyan-300 text-sm">Text: {initialData.text}</p>
+          )}
+        </div>
+      )}
+
       {/* Object ID */}
       <div>
         <label className="text-sm font-medium text-gray-200 mb-2 block">
@@ -162,9 +191,10 @@ export function UpdateElementForm({ onSave, onCancel }: UpdateElementFormProps) 
         <AutoCompleteField
           value={objectId}
           onChange={setObjectId}
-          placeholder="shape-1"
+          placeholder={initialData.objectId || "Select an element first"}
           suggestions={['shape-1', 'text-1', 'image-1', 'line-1', 'table-1']}
           fuzzySearch
+          disabled={!!initialData.objectId}
         />
       </div>
 

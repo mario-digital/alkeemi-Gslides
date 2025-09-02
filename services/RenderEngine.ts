@@ -51,6 +51,12 @@ export class RenderEngine {
   }
 
   render(operations: BatchUpdateOperation[], selectedObjectId?: string) {
+    console.log('RenderEngine.render called with:', {
+      operationsCount: operations.length,
+      operations,
+      selectedObjectId
+    });
+    
     if (this.animationFrame) {
       cancelAnimationFrame(this.animationFrame);
     }
@@ -61,6 +67,7 @@ export class RenderEngine {
       this.renderedElements = [];
 
       operations.forEach(operation => {
+        console.log('Processing operation:', operation);
         this.renderOperation(operation, selectedObjectId);
       });
 
@@ -95,30 +102,91 @@ export class RenderEngine {
   }
 
   private renderOperation(operation: BatchUpdateOperation, selectedObjectId?: string) {
+    console.log('renderOperation called with:', operation);
+    
     if ('createShape' in operation) {
+      console.log('Rendering createShape');
       this.renderShape(operation.createShape, selectedObjectId === operation.createShape.objectId);
+    } else if ('createTextBox' in operation) {
+      console.log('Rendering createTextBox');
+      // TextBox is rendered as a shape with TEXT_BOX type
+      const textBox = {
+        ...operation.createTextBox,
+        shapeType: 'TEXT_BOX',
+        text: operation.createTextBox.text || '' // Ensure text is included
+      };
+      console.log('TextBox object created:', textBox);
+      this.renderShape(textBox, selectedObjectId === operation.createTextBox.objectId);
     } else if ('createImage' in operation) {
+      console.log('Rendering createImage');
       this.renderImage(operation.createImage, selectedObjectId === operation.createImage.objectId);
     } else if ('insertText' in operation) {
+      console.log('insertText operation (not rendered)');
       // Text rendering handled with shapes
+    } else {
+      console.log('Unknown operation type:', Object.keys(operation));
     }
   }
 
   private renderShape(shape: any, isSelected: boolean) {
-    const { scale, offsetX, offsetY } = this.viewport;
-    const slideWidthPx = ptToPixels(SLIDE_WIDTH_PT) * scale;
-    const slideHeightPx = ptToPixels(SLIDE_HEIGHT_PT) * scale;
-    const slideX = (this.viewport.width - slideWidthPx) / 2 + offsetX;
-    const slideY = (this.viewport.height - slideHeightPx) / 2 + offsetY;
+    try {
+      console.log('renderShape called with:', shape, 'isSelected:', isSelected);
+      
+      const { scale, offsetX, offsetY } = this.viewport;
+      const slideWidthPx = ptToPixels(SLIDE_WIDTH_PT) * scale;
+      const slideHeightPx = ptToPixels(SLIDE_HEIGHT_PT) * scale;
+      const slideX = (this.viewport.width - slideWidthPx) / 2 + offsetX;
+      const slideY = (this.viewport.height - slideHeightPx) / 2 + offsetY;
 
-    const props = shape.elementProperties;
-    const transform = props.transform || {};
-    const size = props.size || { width: { magnitude: 100, unit: 'PT' }, height: { magnitude: 100, unit: 'PT' } };
+      const props = shape.elementProperties;
+      const transform = props.transform || {};
+      const size = props.size || { width: { magnitude: 100, unit: 'PT' }, height: { magnitude: 100, unit: 'PT' } };
+      
+      // Debug logging
+      console.log('Rendering shape:', {
+        shapeType: shape.shapeType,
+        objectId: shape.objectId,
+        transform,
+        size,
+        props
+      });
     
-    const x = slideX + ptToPixels(transform.translateX || 0) * scale;
-    const y = slideY + ptToPixels(transform.translateY || 0) * scale;
-    const width = ptToPixels(size.width.magnitude) * scale * (transform.scaleX || 1);
-    const height = ptToPixels(size.height.magnitude) * scale * (transform.scaleY || 1);
+    // Convert values based on units
+    const getValueInPt = (value: number, unit: string = 'PT') => {
+      if (unit === 'EMU') {
+        return value / 12700; // 1 point = 12700 EMU
+      }
+      return value;
+    };
+    
+    const translateX = getValueInPt(transform.translateX || 0, transform.unit || 'PT');
+    const translateY = getValueInPt(transform.translateY || 0, transform.unit || 'PT');
+    const widthPt = getValueInPt(size.width.magnitude, size.width.unit || 'PT');
+    const heightPt = getValueInPt(size.height.magnitude, size.height.unit || 'PT');
+    
+    console.log('Converted values:', {
+      translateX,
+      translateY,
+      widthPt,
+      heightPt
+    });
+    
+    const x = slideX + ptToPixels(translateX) * scale;
+    const y = slideY + ptToPixels(translateY) * scale;
+    const width = ptToPixels(widthPt) * scale * (transform.scaleX || 1);
+    const height = ptToPixels(heightPt) * scale * (transform.scaleY || 1);
+    
+    console.log('Final render coordinates:', {
+      x,
+      y,
+      width,
+      height,
+      slideX,
+      slideY,
+      slideWidthPx,
+      slideHeightPx,
+      viewport: this.viewport
+    });
 
     this.renderedElements.push({
       objectId: shape.objectId,
@@ -142,7 +210,48 @@ export class RenderEngine {
     switch (shape.shapeType) {
       case 'RECTANGLE':
       case 'TEXT_BOX':
+        console.log('Drawing rectangle/text box at:', { x, y, width, height, fillStyle: this.ctx.fillStyle });
         this.ctx.fillRect(x, y, width, height);
+        
+        // If it's a text box and has text content, render the text
+        if (shape.shapeType === 'TEXT_BOX' && shape.text) {
+          this.ctx.save();
+          
+          // Set text properties
+          this.ctx.fillStyle = 'rgba(0, 0, 0, 1)'; // Black text
+          this.ctx.font = `${16 * scale}px sans-serif`;
+          this.ctx.textAlign = 'left';
+          this.ctx.textBaseline = 'top';
+          
+          // Add padding
+          const padding = 10 * scale;
+          const textX = x + padding;
+          const textY = y + padding;
+          const maxWidth = width - (padding * 2);
+          
+          // Simple text wrapping
+          const words = shape.text.split(' ');
+          let line = '';
+          let lineY = textY;
+          const lineHeight = 20 * scale;
+          
+          for (let i = 0; i < words.length; i++) {
+            const testLine = line + words[i] + ' ';
+            const metrics = this.ctx.measureText(testLine);
+            const testWidth = metrics.width;
+            
+            if (testWidth > maxWidth && i > 0) {
+              this.ctx.fillText(line, textX, lineY);
+              line = words[i] + ' ';
+              lineY += lineHeight;
+            } else {
+              line = testLine;
+            }
+          }
+          this.ctx.fillText(line, textX, lineY);
+          
+          this.ctx.restore();
+        }
         break;
       
       case 'ELLIPSE':
@@ -215,6 +324,10 @@ export class RenderEngine {
     }
 
     this.ctx.restore();
+    } catch (error) {
+      console.error('Error in renderShape:', error);
+      console.error('Shape data that caused error:', shape);
+    }
   }
 
   private renderImage(image: any, isSelected: boolean) {
@@ -228,10 +341,23 @@ export class RenderEngine {
     const transform = props.transform || {};
     const size = props.size || { width: { magnitude: 300, unit: 'PT' }, height: { magnitude: 200, unit: 'PT' } };
     
-    const x = slideX + ptToPixels(transform.translateX || 0) * scale;
-    const y = slideY + ptToPixels(transform.translateY || 0) * scale;
-    const width = ptToPixels(size.width.magnitude) * scale * (transform.scaleX || 1);
-    const height = ptToPixels(size.height.magnitude) * scale * (transform.scaleY || 1);
+    // Convert values based on units
+    const getValueInPt = (value: number, unit: string = 'PT') => {
+      if (unit === 'EMU') {
+        return value / 12700; // 1 point = 12700 EMU
+      }
+      return value;
+    };
+    
+    const translateX = getValueInPt(transform.translateX || 0, transform.unit || 'PT');
+    const translateY = getValueInPt(transform.translateY || 0, transform.unit || 'PT');
+    const widthPt = getValueInPt(size.width.magnitude, size.width.unit || 'PT');
+    const heightPt = getValueInPt(size.height.magnitude, size.height.unit || 'PT');
+    
+    const x = slideX + ptToPixels(translateX) * scale;
+    const y = slideY + ptToPixels(translateY) * scale;
+    const width = ptToPixels(widthPt) * scale * (transform.scaleX || 1);
+    const height = ptToPixels(heightPt) * scale * (transform.scaleY || 1);
 
     this.renderedElements.push({
       objectId: image.objectId,

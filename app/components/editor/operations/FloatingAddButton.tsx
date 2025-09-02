@@ -64,36 +64,48 @@ const FloatingAddButton: React.FC<FloatingAddButtonProps> = ({
   const [isOpen, setIsOpen] = React.useState(false)
 
   return (
-    <div className={cn('fixed bottom-6 right-6 z-50', className)}>
+    <div className={cn('fixed bottom-20 left-6 z-50', className)}>
       <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
         <DropdownMenuTrigger asChild>
           <button
             className={cn(
-              'group relative p-4 rounded-full',
-              'bg-gradient-to-r from-primary-neon to-accent-cyan',
-              'shadow-lg shadow-primary-neon/30',
+              'group relative p-3 rounded-xl',
+              'bg-black/40 backdrop-blur-xl',
+              'border border-cyan-500/30',
+              'shadow-[0_0_30px_rgba(6,255,165,0.2)]',
               'transition-all duration-300',
-              'hover:scale-110 hover:shadow-xl hover:shadow-primary-neon/50',
+              'hover:scale-110 hover:border-cyan-400/50',
+              'hover:shadow-[0_0_40px_rgba(6,255,165,0.4)]',
               'active:scale-95',
-              'before:absolute before:inset-0 before:rounded-full',
-              'before:bg-gradient-to-r before:from-primary-neon before:to-accent-cyan',
-              'before:blur-xl before:opacity-50',
-              'before:animate-pulse',
+              'overflow-hidden'
             )}
           >
+            {/* Animated gradient background */}
+            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+              <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/20 via-emerald-500/20 to-purple-500/20 animate-gradient-xy" />
+            </div>
+            
+            {/* Glow effect */}
+            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-20 h-20 bg-cyan-500/30 rounded-full blur-xl" />
+            </div>
+            
             <Plus 
               className={cn(
-                'w-6 h-6 text-white relative z-10',
-                'transition-transform duration-300',
+                'w-5 h-5 relative z-10',
+                'text-cyan-400 group-hover:text-cyan-300',
+                'transition-all duration-300',
+                'drop-shadow-[0_0_8px_rgba(6,255,165,0.8)]',
                 isOpen && 'rotate-45'
               )} 
             />
             <span className="sr-only">Add Operation</span>
             
+            {/* Pulse ring */}
             <div 
               className={cn(
-                'absolute inset-0 rounded-full',
-                'bg-gradient-to-r from-primary-neon to-accent-cyan',
+                'absolute inset-0 rounded-xl',
+                'border border-cyan-500/50',
                 'animate-ping opacity-30'
               )}
             />
@@ -101,13 +113,13 @@ const FloatingAddButton: React.FC<FloatingAddButtonProps> = ({
         </DropdownMenuTrigger>
         
         <DropdownMenuContent 
-          align="end" 
+          align="start" 
           sideOffset={8}
           className={cn(
             'w-56 p-2',
-            'bg-bg-secondary/95 backdrop-blur-xl',
-            'border border-primary-neon/20',
-            'shadow-2xl shadow-primary-neon/20'
+            'bg-black/90 backdrop-blur-2xl',
+            'border border-cyan-500/20',
+            'shadow-[0_0_30px_rgba(6,255,165,0.2)]'
           )}
         >
           {operationTypes.map(({ type, label, icon: Icon, color }) => (

@@ -9,16 +9,20 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 interface OperationsListProps {
   operations: OperationData[]
   className?: string
+  selectedOperationId?: string
   onOperationEdit?: (operation: OperationData) => void
   onOperationDelete?: (id: string) => void
+  onOperationSelect?: (operation: OperationData) => void
   onReorder?: (operations: OperationData[]) => void
 }
 
 const OperationsList: React.FC<OperationsListProps> = ({
   operations,
   className,
+  selectedOperationId,
   onOperationEdit,
   onOperationDelete,
+  onOperationSelect,
 }) => {
   const containerRef = React.useRef<HTMLDivElement>(null)
   const [isVirtualized, setIsVirtualized] = React.useState(false)
@@ -57,11 +61,9 @@ const OperationsList: React.FC<OperationsListProps> = ({
     : 0
 
   return (
-    <GlassPanel
-      variant="primary"
+    <div
       className={cn(
         'flex flex-col h-full overflow-hidden',
-        'bg-bg-secondary/60',
         className
       )}
     >
@@ -101,8 +103,10 @@ const OperationsList: React.FC<OperationsListProps> = ({
                   key={operation.id}
                   operation={operation}
                   index={actualIndex}
+                  isSelected={selectedOperationId === operation.id}
                   onEdit={onOperationEdit}
                   onDelete={onOperationDelete}
+                  onSelect={onOperationSelect}
                   className="mb-3"
                 />
               )
@@ -129,7 +133,7 @@ const OperationsList: React.FC<OperationsListProps> = ({
           </p>
         </div>
       )}
-    </GlassPanel>
+    </div>
   )
 }
 

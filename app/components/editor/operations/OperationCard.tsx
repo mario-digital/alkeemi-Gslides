@@ -72,8 +72,10 @@ export interface OperationCardProps
   index: number
   isDragging?: boolean
   isDragOver?: boolean
+  isSelected?: boolean
   onEdit?: (operation: OperationData) => void
   onDelete?: (id: string) => void
+  onSelect?: (operation: OperationData) => void
 }
 
 const OperationCard = React.forwardRef<HTMLDivElement, OperationCardProps>(
@@ -81,8 +83,12 @@ const OperationCard = React.forwardRef<HTMLDivElement, OperationCardProps>(
     className, 
     operation, 
     index,
+    onEdit,
+    onDelete,
+    onSelect,
     isDragging = false,
     isDragOver = false,
+    isSelected = false,
     state,
     ...props 
   }, ref) => {
@@ -106,13 +112,15 @@ const OperationCard = React.forwardRef<HTMLDivElement, OperationCardProps>(
         }}
         {...props}
       >
-        <GlassPanel
-          variant="secondary"
+        <div
           className={cn(
             'relative overflow-hidden transition-all duration-200',
-            'hover:translate-y-[-4px] hover:shadow-[0_0_30px_rgba(168,85,247,0.3)]',
+            'p-4 rounded-lg',
+            'border border-white/10',
+            'hover:translate-y-[-4px] hover:border-white/20',
             'will-change-transform',
-            typeColor
+            typeColor,
+            isSelected && 'ring-2 ring-cyan-500 bg-cyan-500/5'
           )}
         >
           <div className="flex items-start gap-3">
@@ -145,6 +153,28 @@ const OperationCard = React.forwardRef<HTMLDivElement, OperationCardProps>(
             </div>
 
             <div className="flex items-center gap-2">
+              {/* Selection Checkbox */}
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  onSelect?.(operation)
+                }}
+                className={cn(
+                  'w-5 h-5 rounded border-2 transition-all',
+                  isSelected 
+                    ? 'bg-cyan-500 border-cyan-500' 
+                    : 'border-gray-500 hover:border-cyan-400'
+                )}
+                aria-label="Select for update"
+              >
+                {isSelected && (
+                  <svg className="w-3 h-3 text-black mx-auto" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                  </svg>
+                )}
+              </button>
+              
               {operation.isValid === false && (
                 <AlertCircle className="w-4 h-4 text-red-500" />
               )}
@@ -170,7 +200,7 @@ const OperationCard = React.forwardRef<HTMLDivElement, OperationCardProps>(
             operation.type === 'transform' && 'from-[#a855f7] to-transparent',
             operation.type === 'text' && 'from-[#fbbf24] to-transparent'
           )} />
-        </GlassPanel>
+        </div>
       </div>
     )
   }

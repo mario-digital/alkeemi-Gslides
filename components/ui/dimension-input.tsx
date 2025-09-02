@@ -15,6 +15,10 @@ interface DimensionInputProps {
   className?: string
 }
 
+// EMU conversion constants
+const EMU_PER_INCH = 914400;
+const EMU_PER_PT = 12700;
+
 export function DimensionInput({
   value,
   onChange,
@@ -30,9 +34,18 @@ export function DimensionInput({
   const [aspectRatio, setAspectRatio] = useState(
     value.height > 0 ? value.width / value.height : 1
   )
+  
+  // Convert EMU to inches for display
+  const emuToInches = (emu: number) => (emu / EMU_PER_INCH).toFixed(2);
+  const inchesToEmu = (inches: number) => Math.round(inches * EMU_PER_INCH);
+  
+  // Display values in inches
+  const displayWidth = parseFloat(emuToInches(value.width));
+  const displayHeight = parseFloat(emuToInches(value.height));
 
   const handleWidthChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newWidth = parseInt(e.target.value) || 0
+    const inchValue = parseFloat(e.target.value) || 0
+    const newWidth = inchesToEmu(inchValue)
     const clampedWidth = Math.max(min, Math.min(max, newWidth))
     
     if (linked && value.height > 0) {
@@ -47,7 +60,8 @@ export function DimensionInput({
   }
 
   const handleHeightChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newHeight = parseInt(e.target.value) || 0
+    const inchValue = parseFloat(e.target.value) || 0
+    const newHeight = inchesToEmu(inchValue)
     const clampedHeight = Math.max(min, Math.min(max, newHeight))
     
     if (linked && clampedHeight > 0) {
@@ -63,7 +77,9 @@ export function DimensionInput({
 
   const handleIncrement = (dimension: 'width' | 'height', direction: 1 | -1) => {
     const currentValue = value[dimension]
-    const newValue = Math.max(min, Math.min(max, currentValue + (step * direction)))
+    // Use 0.1 inch increments
+    const incrementEmu = EMU_PER_INCH * 0.1;
+    const newValue = Math.max(min, Math.min(max, currentValue + (incrementEmu * direction)))
     
     if (dimension === 'width') {
       handleWidthChange({ target: { value: newValue.toString() } } as React.ChangeEvent<HTMLInputElement>)
@@ -95,7 +111,12 @@ export function DimensionInput({
           <label className="text-xs text-gray-400 mb-1 block">Width</label>
           <div className="relative flex items-center">
             <button
-              onClick={() => handleIncrement('width', -1)}
+              type="button"
+              onClick={(e) => {
+                e.preventDefault()
+                e.stopPropagation()
+                handleIncrement('width', -1)
+              }}
               className="absolute left-2 p-1 hover:bg-white/10 rounded transition-colors z-10"
               aria-label="Decrease width"
             >
@@ -106,16 +127,21 @@ export function DimensionInput({
             
             <Input
               type="number"
-              value={value.width}
+              value={displayWidth}
               onChange={handleWidthChange}
               className="px-8 text-center font-mono"
-              min={min}
-              max={max}
-              step={step}
+              min={0}
+              max={11}
+              step={0.1}
             />
             
             <button
-              onClick={() => handleIncrement('width', 1)}
+              type="button"
+              onClick={(e) => {
+                e.preventDefault()
+                e.stopPropagation()
+                handleIncrement('width', 1)
+              }}
               className="absolute right-2 p-1 hover:bg-white/10 rounded transition-colors z-10"
               aria-label="Increase width"
             >
@@ -128,7 +154,12 @@ export function DimensionInput({
 
         {/* Link Button */}
         <button
-          onClick={toggleLinked}
+          type="button"
+          onClick={(e) => {
+            e.preventDefault()
+            e.stopPropagation()
+            toggleLinked()
+          }}
           className={`
             mt-6 p-2 rounded-lg border transition-all
             ${linked ? 
@@ -159,7 +190,12 @@ export function DimensionInput({
           <label className="text-xs text-gray-400 mb-1 block">Height</label>
           <div className="relative flex items-center">
             <button
-              onClick={() => handleIncrement('height', -1)}
+              type="button"
+              onClick={(e) => {
+                e.preventDefault()
+                e.stopPropagation()
+                handleIncrement('height', -1)
+              }}
               className="absolute left-2 p-1 hover:bg-white/10 rounded transition-colors z-10"
               aria-label="Decrease height"
             >
@@ -170,16 +206,21 @@ export function DimensionInput({
             
             <Input
               type="number"
-              value={value.height}
+              value={displayHeight}
               onChange={handleHeightChange}
               className="px-8 text-center font-mono"
-              min={min}
-              max={max}
-              step={step}
+              min={0}
+              max={11}
+              step={0.1}
             />
             
             <button
-              onClick={() => handleIncrement('height', 1)}
+              type="button"
+              onClick={(e) => {
+                e.preventDefault()
+                e.stopPropagation()
+                handleIncrement('height', 1)
+              }}
               className="absolute right-2 p-1 hover:bg-white/10 rounded transition-colors z-10"
               aria-label="Increase height"
             >
@@ -192,10 +233,15 @@ export function DimensionInput({
       </div>
       
       {/* Helper Text */}
-      <p className="text-xs text-gray-400">
-        {unit} • Step: {step} {unit === 'EMU' && `(${(step / 12700).toFixed(1)} pt)`}
-        {linked && ' • Aspect ratio locked'}
-      </p>
+      <div className="flex items-center justify-between">
+        <p className="text-xs text-gray-400">
+          Size in inches: {displayWidth}" × {displayHeight}"
+          {linked && ' • Aspect ratio locked'}
+        </p>
+        <p className="text-xs text-gray-500">
+          ({value.width} × {value.height} EMU)
+        </p>
+      </div>
     </div>
   )
 }

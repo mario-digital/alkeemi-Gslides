@@ -28,84 +28,91 @@ export function ValidationStatusBar() {
   const statusIcon = useMemo(() => {
     switch (globalValidationState) {
       case 'invalid':
-        return <AlertCircle className="h-4 w-4 text-red-500" />
+        return <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
       case 'warning':
-        return <AlertTriangle className="h-4 w-4 text-yellow-500" />
+        return <div className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
       case 'valid':
-        return <CheckCircle2 className="h-4 w-4 text-green-500" />
-    }
-  }, [globalValidationState])
-
-  const statusColor = useMemo(() => {
-    switch (globalValidationState) {
-      case 'invalid':
-        return 'border-red-500/50 bg-red-500/10'
-      case 'warning':
-        return 'border-yellow-500/50 bg-yellow-500/10'
-      case 'valid':
-        return 'border-green-500/50 bg-green-500/10'
+        return <div className="w-2 h-2 rounded-full bg-emerald-500" />
     }
   }, [globalValidationState])
 
   return (
     <div className={cn(
       "fixed bottom-0 left-0 right-0 z-40",
-      "backdrop-blur-xl bg-black/40 border-t",
-      statusColor,
+      "backdrop-blur-2xl bg-black/80",
+      "border-t border-white/5",
       "transition-all duration-300"
     )}>
-      <div className="container mx-auto px-4 py-3">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-6">
-            <div className="flex items-center gap-2">
+      <div className="h-12 flex items-center px-6">
+        <div className="flex items-center justify-between w-full">
+          <div className="flex items-center gap-8">
+            {/* Status Indicator */}
+            <div className="flex items-center gap-3">
               {statusIcon}
-              <span className="text-sm font-medium">
-                {globalValidationState === 'valid' ? 'Valid' : 
-                 globalValidationState === 'warning' ? 'Warnings' : 'Invalid'}
+              <span className={cn(
+                "text-xs font-medium uppercase tracking-wider",
+                globalValidationState === 'valid' ? 'text-emerald-400' : 
+                globalValidationState === 'warning' ? 'text-amber-400' : 'text-red-400'
+              )}>
+                {globalValidationState}
               </span>
             </div>
 
-            <div className="flex items-center gap-4 text-sm">
-              <span className="text-muted-foreground">
-                Operations: <span className="font-mono text-white">{operations.length}</span>
-              </span>
+            {/* Divider */}
+            <div className="h-6 w-px bg-white/10" />
+
+            {/* Stats */}
+            <div className="flex items-center gap-6 text-xs">
+              <div className="flex items-center gap-2">
+                <span className="text-zinc-500">Operations:</span>
+                <span className="font-mono text-zinc-300">{operations.length}</span>
+              </div>
               
               {errorCount > 0 && (
-                <span className="text-red-400">
-                  Errors: <span className="font-mono">{errorCount - warningCount}</span>
-                </span>
+                <div className="flex items-center gap-2">
+                  <span className="text-red-400/70">Errors:</span>
+                  <span className="font-mono text-red-400">{errorCount - warningCount}</span>
+                </div>
               )}
               
               {warningCount > 0 && (
-                <span className="text-yellow-400">
-                  Warnings: <span className="font-mono">{warningCount}</span>
-                </span>
+                <div className="flex items-center gap-2">
+                  <span className="text-amber-400/70">Warnings:</span>
+                  <span className="font-mono text-amber-400">{warningCount}</span>
+                </div>
               )}
             </div>
           </div>
 
+          {/* Actions */}
           <div className="flex items-center gap-2">
-            <Button
-              variant="ghost"
-              size="sm"
+            <button
               onClick={() => {
-                // Trigger validation for all operations
                 window.dispatchEvent(new CustomEvent('validate-all'))
               }}
-              className="gap-2"
+              className={cn(
+                "px-3 py-1.5 rounded-md text-xs font-medium",
+                "bg-white/5 hover:bg-white/10",
+                "text-zinc-400 hover:text-zinc-200",
+                "border border-white/10 hover:border-white/20",
+                "transition-all duration-200"
+              )}
             >
-              <FileCheck className="h-4 w-4" />
+              <FileCheck className="h-3 w-3 inline-block mr-1.5" />
               Validate All
-            </Button>
+            </button>
             
-            <Button
-              variant="ghost"
-              size="sm"
+            <button
               onClick={clearOperations}
-              className="text-red-400 hover:text-red-300"
+              className={cn(
+                "px-3 py-1.5 rounded-md text-xs font-medium",
+                "hover:bg-red-500/10",
+                "text-zinc-500 hover:text-red-400",
+                "transition-all duration-200"
+              )}
             >
               Clear All
-            </Button>
+            </button>
           </div>
         </div>
       </div>

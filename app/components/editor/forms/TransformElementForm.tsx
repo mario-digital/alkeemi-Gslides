@@ -5,16 +5,16 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { AutoCompleteField } from '../modals/AutoCompleteField'
 import { CoordinatePicker } from '../modals/CoordinatePicker'
-import { BatchUpdateRequest } from '@/types/batch-update'
+import { BatchUpdateOperation } from '@/types/batch-update'
 
 interface TransformElementFormProps {
-  operation?: BatchUpdateRequest
-  onSave: (operation: BatchUpdateRequest) => void
+  operation?: BatchUpdateOperation
+  onSave: (operation: BatchUpdateOperation) => void
   onCancel: () => void
 }
 
 export function TransformElementForm({ operation, onSave, onCancel }: TransformElementFormProps) {
-  const existingTransform = operation?.updatePageElementTransform
+  const existingTransform = operation ? 'updatePageElementTransform' in operation ? (operation as {updatePageElementTransform: unknown}).updatePageElementTransform : undefined : undefined
   
   const [objectId, setObjectId] = useState(existingTransform?.objectId || '')
   const [applyMode, setApplyMode] = useState(existingTransform?.applyMode || 'RELATIVE')
@@ -54,7 +54,7 @@ export function TransformElementForm({ operation, onSave, onCancel }: TransformE
     
     if (!validateForm()) return
     
-    const transform: any = {
+    const transform: Record<string, unknown> = {
       unit: 'EMU'
     }
     
@@ -82,7 +82,7 @@ export function TransformElementForm({ operation, onSave, onCancel }: TransformE
       transform.skewY = skewY
     }
     
-    const newOperation: BatchUpdateRequest = {
+    const newOperation: BatchUpdateOperation = {
       updatePageElementTransform: {
         objectId,
         applyMode,

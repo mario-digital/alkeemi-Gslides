@@ -3,16 +3,16 @@
 import React, { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { AutoCompleteField } from '../modals/AutoCompleteField'
-import { BatchUpdateRequest } from '@/types/batch-update'
+import { BatchUpdateOperation } from '@/types/batch-update'
 
 interface DeleteElementFormProps {
-  operation?: BatchUpdateRequest
-  onSave: (operation: BatchUpdateRequest) => void
+  operation?: BatchUpdateOperation
+  onSave: (operation: BatchUpdateOperation) => void
   onCancel: () => void
 }
 
 export function DeleteElementForm({ operation, onSave, onCancel }: DeleteElementFormProps) {
-  const existingDelete = operation?.deleteObject
+  const existingDelete = operation ? 'deleteObject' in operation ? operation.deleteObject : undefined : undefined
   const [objectId, setObjectId] = useState(existingDelete?.objectId || '')
   const [confirmDelete, setConfirmDelete] = useState(false)
   const [validationErrors, setValidationErrors] = useState<string[]>([])
@@ -37,7 +37,7 @@ export function DeleteElementForm({ operation, onSave, onCancel }: DeleteElement
     
     if (!validateForm()) return
     
-    const newOperation: BatchUpdateRequest = {
+    const newOperation: BatchUpdateOperation = {
       deleteObject: {
         objectId
       }

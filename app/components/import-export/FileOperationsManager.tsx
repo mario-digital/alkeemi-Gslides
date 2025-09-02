@@ -133,7 +133,7 @@ export function FileOperationsManager({
       try {
         const { timestamp } = JSON.parse(stored);
         const savedDate = new Date(timestamp);
-        const hoursSinceS…Save = (Date.now() - savedDate.getTime()) / (1000 * 60 * 60);
+        const hoursSinceSave = (Date.now() - savedDate.getTime()) / (1000 * 60 * 60);
         
         if (hoursSinceSave < 24) {
           // Show notification about available auto-save

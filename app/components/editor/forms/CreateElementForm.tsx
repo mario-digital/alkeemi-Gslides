@@ -8,6 +8,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { NeonColorPicker } from '@/components/ui/neon-color-picker'
 import { DimensionInput } from '@/components/ui/dimension-input'
 import { CoordinatePicker } from '../modals/CoordinatePicker'
+import { BatchUpdateOperation } from '@/types/batch-update'
 import { AutoCompleteField } from '../modals/AutoCompleteField'
 import { BatchUpdateRequest } from '@/types/batch-update'
 
@@ -33,20 +34,64 @@ const SHAPE_TYPES = [
 ]
 
 export function CreateElementForm({ operation, onSave, onCancel }: CreateElementFormProps) {
-  const [elementType, setElementType] = useState(
-    operation ? Object.keys(operation)[0] : 'createShape'
-  )
-  const [objectId, setObjectId] = useState('')
-  const [pageObjectId, setPageObjectId] = useState('')
-  const [shapeType, setShapeType] = useState('RECTANGLE')
-  const [text, setText] = useState('')
-  const [imageUrl, setImageUrl] = useState('')
-  const [position, setPosition] = useState({ x: 0, y: 0 })
-  const [size, setSize] = useState({ width: 1828800, height: 1828800 }) // 2" x 2" default
-  const [backgroundColor, setBackgroundColor] = useState('#00ffff')
-  const [borderColor, setBorderColor] = useState('#ffffff')
-  const [tableRows, setTableRows] = useState(3)
-  const [tableColumns, setTableColumns] = useState(3)
+  // Initialize form state from existing operation if editing
+  const getInitialValues = () => {
+    if (!operation) {
+      return {
+        elementType: 'createShape',
+        objectId: '',
+        pageObjectId: '',
+        shapeType: 'RECTANGLE',
+        text: '',
+        imageUrl: '',
+        position: { x: 0, y: 0 },
+        size: { width: 1828800, height: 1828800 }, // 2" x 2" default
+        backgroundColor: '#00ffff',
+        borderColor: '#ffffff',
+        tableRows: 3,
+        tableColumns: 3
+      }
+    }
+    
+    const opType = Object.keys(operation)[0]
+    const opData = (operation as any)[opType]
+    
+    return {
+      elementType: opType,
+      objectId: opData.objectId || '',
+      pageObjectId: opData.elementProperties?.pageObjectId || '',
+      shapeType: opData.shapeType || 'RECTANGLE',
+      text: opData.text || '',
+      imageUrl: opData.url || '',
+      position: {
+        x: opData.elementProperties?.transform?.translateX || 0,
+        y: opData.elementProperties?.transform?.translateY || 0
+      },
+      size: {
+        width: opData.elementProperties?.size?.width?.magnitude || 1828800,
+        height: opData.elementProperties?.size?.height?.magnitude || 1828800
+      },
+      backgroundColor: '#00ffff',
+      borderColor: '#ffffff',
+      tableRows: opData.rows || 3,
+      tableColumns: opData.columns || 3
+    }
+  }
+  
+  const initial = getInitialValues()
+  
+  const [elementType, setElementType] = useState(initial.elementType)
+  const [objectId, setObjectId] = useState(initial.objectId)
+  const [pageObjectId, setPageObjectId] = useState(initial.pageObjectId)
+  const [shapeType, setShapeType] = useState(initial.shapeType)
+  const [text, setText] = useState(initial.text)
+  const [imageUrl, setImageUrl] = useState(initial.imageUrl)
+  const [position, setPosition] = useState(initial.position)
+  const [size, setSize] = useState(initial.size)
+  const [backgroundColor, setBackgroundColor] = useState(initial.backgroundColor)
+  const [borderColor, setBorderColor] = useState(initial.borderColor)
+  const [tableRows, setTableRows] = useState(initial.tableRows)
+  const [tableColumns, setTableColumns] = useState(initial.tableColumns)
   const [validationErrors, setValidationErrors] = useState<string[]>([])
 
   const validateForm = (): boolean => {
@@ -88,7 +133,7 @@ export function CreateElementForm({ operation, onSave, onCancel }: CreateElement
     
     if (!validateForm()) return
     
-    let newOperation: BatchUpdateRequest = {}
+    let newOperation: BatchUpdateOperation = {} as BatchUpdateOperation
     
     switch (elementType) {
       case 'createShape':
@@ -109,6 +154,38 @@ export function CreateElementForm({ operation, onSave, onCancel }: CreateElement
                 translateY: position.y,
                 unit: 'EMU'
               }
+            },
+            shapeProperties: {
+              shapeBackgroundFill: {
+                solidFill: {
+                  color: {
+                    rgbColor: {
+                      red: 0.5,
+                      green: 0.8,
+                      blue: 0.9
+                    }
+                  },
+                  alpha: 0.8
+                }
+              },
+              outline: {
+                outlineFill: {
+                  solidFill: {
+                    color: {
+                      rgbColor: {
+                        red: 0.2,
+                        green: 0.6,
+                        blue: 0.8
+                      }
+                    },
+                    alpha: 1
+                  }
+                },
+                weight: {
+                  magnitude: 2,
+                  unit: 'PT'
+                }
+              }
             }
           }
         }
@@ -118,6 +195,7 @@ export function CreateElementForm({ operation, onSave, onCancel }: CreateElement
         newOperation = {
           createTextBox: {
             objectId,
+            text: text || 'Sample Text', // Add the text content
             elementProperties: {
               pageObjectId,
               size: {
@@ -130,6 +208,38 @@ export function CreateElementForm({ operation, onSave, onCancel }: CreateElement
                 translateX: position.x,
                 translateY: position.y,
                 unit: 'EMU'
+              }
+            },
+            shapeProperties: {
+              shapeBackgroundFill: {
+                solidFill: {
+                  color: {
+                    rgbColor: {
+                      red: 0.95,
+                      green: 0.95,
+                      blue: 0.95
+                    }
+                  },
+                  alpha: 0.9
+                }
+              },
+              outline: {
+                outlineFill: {
+                  solidFill: {
+                    color: {
+                      rgbColor: {
+                        red: 0.4,
+                        green: 0.4,
+                        blue: 0.4
+                      }
+                    },
+                    alpha: 1
+                  }
+                },
+                weight: {
+                  magnitude: 1,
+                  unit: 'PT'
+                }
               }
             }
           }
