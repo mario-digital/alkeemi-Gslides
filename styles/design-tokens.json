@@ -1,0 +1,148 @@
+{
+  "colors": {
+    "background": {
+      "primary": {
+        "value": "#0a0a0f",
+        "description": "Main background - deep space black for OLED optimization"
+      },
+      "secondary": {
+        "value": "#1a1a2e",
+        "description": "Panel backgrounds - darker navy"
+      },
+      "tertiary": {
+        "value": "#16213e",
+        "description": "Card backgrounds - midnight blue"
+      }
+    },
+    "neon": {
+      "primary": {
+        "value": "#a855f7",
+        "description": "Purple primary - actions, highlights, main CTAs"
+      },
+      "secondary": {
+        "value": "#8b5cf6",
+        "description": "Violet secondary - secondary actions"
+      }
+    },
+    "accent": {
+      "electric": {
+        "value": "#06ffa5",
+        "description": "Electric green - success states, validation"
+      },
+      "pink": {
+        "value": "#ec4899",
+        "description": "Hot pink - warnings, important emphasis"
+      },
+      "cyan": {
+        "value": "#22d3ee",
+        "description": "Cyan - information, links"
+      }
+    },
+    "text": {
+      "primary": {
+        "value": "#f8fafc",
+        "description": "Main text - almost white, high contrast"
+      },
+      "secondary": {
+        "value": "#cbd5e1",
+        "description": "Secondary text - light slate"
+      },
+      "muted": {
+        "value": "#64748b",
+        "description": "Muted text - slate, de-emphasized content"
+      }
+    },
+    "border": {
+      "glow": {
+        "value": "#6366f1",
+        "description": "Glowing borders - indigo"
+      }
+    },
+    "semantic": {
+      "success": {
+        "value": "#10b981",
+        "description": "Validation success - emerald"
+      },
+      "warning": {
+        "value": "#f59e0b",
+        "description": "Important notices - amber"
+      },
+      "error": {
+        "value": "#ef4444",
+        "description": "Errors, validation failures - red"
+      }
+    }
+  },
+  "effects": {
+    "glassMorphism": {
+      "backdropBlur": "10px",
+      "borderRadius": "12px",
+      "backgroundOpacity": "0.8",
+      "borderOpacity": "0.2"
+    },
+    "glow": {
+      "subtle": {
+        "spread": "10px",
+        "opacity": "0.2"
+      },
+      "medium": {
+        "spread": "20px",
+        "opacity": "0.3"
+      },
+      "strong": {
+        "spread": "30px",
+        "opacity": "0.5"
+      }
+    },
+    "gradients": {
+      "primary": {
+        "angle": "135deg",
+        "from": "#a855f7",
+        "to": "#8b5cf6"
+      },
+      "secondary": {
+        "angle": "135deg",
+        "from": "#8b5cf6",
+        "to": "#6366f1"
+      },
+      "accent": {
+        "angle": "135deg",
+        "from": "#06ffa5",
+        "to": "#22d3ee"
+      },
+      "danger": {
+        "angle": "135deg",
+        "from": "#ec4899",
+        "to": "#ef4444"
+      }
+    }
+  },
+  "accessibility": {
+    "contrastRatios": {
+      "textPrimaryOnBgPrimary": "15.1:1",
+      "textPrimaryOnBgSecondary": "12.8:1",
+      "textPrimaryOnBgTertiary": "11.2:1",
+      "textSecondaryOnBgPrimary": "9.4:1",
+      "textSecondaryOnBgSecondary": "8.1:1",
+      "textMutedOnBgPrimary": "4.9:1",
+      "minimumRequired": "7:1",
+      "targetRatio": "7:1"
+    },
+    "focusIndicators": {
+      "minThickness": "3px",
+      "color": "#a855f7",
+      "opacity": "0.5"
+    }
+  },
+  "performance": {
+    "oledOptimization": {
+      "pureBlackPercentage": "60%",
+      "estimatedPowerSaving": "25-40%"
+    },
+    "animationBudget": {
+      "maxDuration": "300ms",
+      "preferredDuration": "200ms",
+      "hardwareAccelerated": true
+    }
+  }
+}

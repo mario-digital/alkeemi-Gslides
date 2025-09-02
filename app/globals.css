@@ -1,61 +1,62 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=JetBrains+Mono:wght@400&family=Outfit:wght@600;700;800&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* Import accessibility styles */
+@import './styles/accessibility.css';
+
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 0 0% 3.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 3.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 3.9%;
-    --primary: 0 0% 9%;
-    --primary-foreground: 0 0% 98%;
-    --secondary: 0 0% 96.1%;
-    --secondary-foreground: 0 0% 9%;
-    --muted: 0 0% 96.1%;
-    --muted-foreground: 0 0% 45.1%;
-    --accent: 0 0% 96.1%;
+    /* Core Design System Colors - Dark Mode (Primary) */
+    --bg-primary: #0a0a0f;        /* Main background - deep space black */
+    --bg-secondary: #1a1a2e;      /* Panel backgrounds - darker navy */
+    --bg-tertiary: #16213e;       /* Card backgrounds - midnight blue */
+    --primary-neon: #a855f7;      /* Purple primary - actions, highlights */
+    --secondary-neon: #8b5cf6;    /* Violet secondary - secondary actions */
+    --accent-electric: #06ffa5;   /* Electric green - success, validation */
+    --accent-pink: #ec4899;       /* Hot pink - warnings, emphasis */
+    --accent-cyan: #22d3ee;       /* Cyan - information, links */
+    --text-primary: #f8fafc;      /* Main text - almost white */
+    --text-secondary: #cbd5e1;    /* Secondary text - light slate */
+    --text-muted: #64748b;        /* Muted text - slate */
+    --border-glow: #6366f1;       /* Glowing borders - indigo */
+    --success: #10b981;           /* Validation success - emerald */
+    --warning: #f59e0b;           /* Important notices - amber */
+    --error: #ef4444;             /* Errors, validation failures - red */
+
+    /* Legacy variables for shadcn/ui compatibility */
+    --background: 0 0% 4%;        /* Maps to bg-primary */
+    --foreground: 0 0% 98%;       /* Maps to text-primary */
+    --card: 240 19% 16%;          /* Maps to bg-secondary */
+    --card-foreground: 0 0% 98%;
+    --popover: 240 19% 16%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 271 91% 65%;       /* Maps to primary-neon */
+    --primary-foreground: 0 0% 9%;
+    --secondary: 262 83% 68%;     /* Maps to secondary-neon */
+    --secondary-foreground: 0 0% 98%;
+    --muted: 220 13% 46%;         /* Maps to text-muted */
+    --muted-foreground: 210 20% 82%;
+    --accent: 158 100% 52%;       /* Maps to accent-electric */
     --accent-foreground: 0 0% 9%;
-    --destructive: 0 84.2% 60.2%;
+    --destructive: 0 84% 60%;     /* Maps to error */
     --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 89.8%;
-    --input: 0 0% 89.8%;
-    --ring: 0 0% 3.9%;
-    --radius: 0.5rem;
-    --chart-1: 12 76% 61%;
-    --chart-2: 173 58% 39%;
-    --chart-3: 197 37% 24%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
+    --border: 240 6% 20%;
+    --input: 240 19% 16%;
+    --ring: 271 91% 65%;
+    --radius: 0.75rem;
+    --chart-1: 271 91% 65%;
+    --chart-2: 158 100% 52%;
+    --chart-3: 332 84% 70%;
+    --chart-4: 191 91% 55%;
+    --chart-5: 262 83% 68%;
   }
 
   .dark {
-    --background: 0 0% 3.9%;
-    --foreground: 0 0% 98%;
-    --card: 0 0% 7%;
-    --card-foreground: 0 0% 98%;
-    --popover: 0 0% 7%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 271 91% 65%;
-    --primary-foreground: 0 0% 9%;
-    --secondary: 271 70% 25%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 0 0% 14.9%;
-    --muted-foreground: 0 0% 63.9%;
-    --accent: 271 91% 65%;
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 271 30% 20%;
-    --input: 0 0% 14.9%;
-    --ring: 271 91% 65%;
-    --chart-1: 271 91% 65%;
-    --chart-2: 280 70% 50%;
-    --chart-3: 290 80% 55%;
-    --chart-4: 260 65% 60%;
-    --chart-5: 250 75% 55%;
+    /* Dark mode is the default and primary theme */
+    /* All color values are already set for dark mode above */
   }
 }
 
@@ -63,10 +64,207 @@
   * {
     @apply border-border;
   }
+  
   body {
-    @apply bg-background text-foreground;
+    @apply bg-bg-primary text-text-primary font-primary;
+    font-feature-settings: "rlig" 1, "calt" 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
+  
   html {
     @apply dark;
+    color-scheme: dark;
   }
+  
+  /* Typography System - Type Scale */
+  h1 {
+    @apply font-display text-text-primary;
+    font-size: 2.5rem;
+    line-height: 1.1;
+    font-weight: 800;
+  }
+  
+  h2 {
+    @apply font-display text-text-primary;
+    font-size: 2rem;
+    line-height: 1.2;
+    font-weight: 700;
+  }
+  
+  h3 {
+    @apply font-display text-text-primary;
+    font-size: 1.5rem;
+    line-height: 1.3;
+    font-weight: 600;
+  }
+  
+  p {
+    @apply font-primary text-text-primary;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    font-weight: 400;
+  }
+  
+  small {
+    @apply font-primary text-text-secondary;
+    font-size: 0.75rem;
+    line-height: 1.4;
+    font-weight: 400;
+  }
+  
+  code, pre {
+    @apply font-mono text-text-primary;
+    font-size: 0.8125rem;
+    line-height: 1.4;
+    font-weight: 400;
+  }
+}
+
+@layer components {
+  /* Glass Morphism Base Styles */
+  .glass-panel {
+    @apply bg-bg-secondary/80 backdrop-blur-glass border border-primary-neon/20 rounded-glass;
+    box-shadow: 0 0 20px rgba(168, 85, 247, 0.1);
+  }
+
+  .glass-panel-tertiary {
+    @apply bg-bg-tertiary/80 backdrop-blur-glass border border-primary-neon/20 rounded-glass;
+    box-shadow: 0 0 20px rgba(168, 85, 247, 0.1);
+  }
+
+  /* Gradient Utilities */
+  .bg-primary-gradient {
+    @apply bg-gradient-to-br from-primary-neon to-secondary-neon;
+  }
+
+  .bg-accent-gradient {
+    @apply bg-gradient-to-br from-accent-electric to-accent-cyan;
+  }
+
+  /* Glow Effect Utilities */
+  .glow-primary {
+    box-shadow: 0 0 20px rgba(168, 85, 247, 0.3);
+  }
+
+  .glow-primary-hover {
+    box-shadow: 0 0 30px rgba(168, 85, 247, 0.5);
+  }
+
+  .glow-electric {
+    box-shadow: 0 0 20px rgba(6, 255, 165, 0.4);
+  }
+
+  .glow-border-primary {
+    @apply border-primary-neon/30 shadow-glow-border;
+  }
+
+  /* Focus States with Glow */
+  .focus-glow:focus {
+    @apply outline-none ring-2 ring-primary-neon/50 shadow-glow;
+  }
+
+  /* Button Hover States */
+  .btn-glow {
+    @apply transition-all duration-200 hover:shadow-glow hover:scale-105;
+  }
+
+  /* Text Glow Effects */
+  .text-glow-primary {
+    text-shadow: 0 0 10px rgba(168, 85, 247, 0.5);
+  }
+
+  .text-glow-electric {
+    text-shadow: 0 0 10px rgba(6, 255, 165, 0.6);
+  }
+
+  /* Performance Optimizations */
+  .gpu-accelerated {
+    transform: translateZ(0);
+    will-change: transform, opacity;
+  }
+
+  /* Reduced Motion Support */
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  /* OLED Optimization */
+  .oled-black {
+    background-color: #000000;
+  }
+
+  /* High Contrast Focus Indicators */
+  .focus-visible:focus-visible {
+    @apply outline-none ring-2 ring-primary-neon ring-offset-2 ring-offset-bg-primary;
+    box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.3);
+  }
+}
+
+@layer utilities {
+  /* Utility classes for animations */
+  .animate-glow-pulse {
+    animation: glow-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  .animate-glow-pulse-slow {
+    animation: glow-pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  /* Background blur utilities */
+  .backdrop-blur-glass {
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+
+  /* Text gradient utilities */
+  .text-gradient-primary {
+    @apply bg-clip-text text-transparent bg-primary-gradient;
+  }
+
+  .text-gradient-accent {
+    @apply bg-clip-text text-transparent bg-accent-gradient;
+  }
+
+  /* Ripple Effect for Buttons */
+  .ripple-effect {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.5);
+    transform: scale(0);
+    animation: ripple 600ms linear;
+    pointer-events: none;
+  }
+
+  @keyframes ripple {
+    to {
+      transform: scale(4);
+      opacity: 0;
+    }
+  }
+
+  /* High Contrast Mode Adjustments */
+  .high-contrast {
+    filter: contrast(1.2);
+  }
+
+  .high-contrast .glass-panel {
+    @apply bg-bg-secondary border-2 border-primary-neon;
+    backdrop-filter: none;
+  }
+
+  /* Large Text Mode */
+  .large-text {
+    font-size: 110%;
+  }
+
+  .large-text h1 { font-size: 3rem; }
+  .large-text h2 { font-size: 2.5rem; }
+  .large-text h3 { font-size: 2rem; }
+  .large-text p { font-size: 1.125rem; }
+  .large-text small { font-size: 1rem; }
 }

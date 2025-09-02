@@ -44,7 +44,7 @@ export default function VisualBuilderPage() {
       selectElement({
         objectId,
         type,
-        properties: properties as Record<string, any>
+        properties
       });
     }
   };

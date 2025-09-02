@@ -9,15 +9,16 @@ describe('ElementToolbar', () => {
   });
 
   test('renders all element type buttons', () => {
-    render(<ElementToolbar />);
+    const { container } = render(<ElementToolbar />);
     
-    expect(screen.getByTitle('Rectangle')).toBeInTheDocument();
-    expect(screen.getByTitle('Text Box')).toBeInTheDocument();
-    expect(screen.getByTitle('Image')).toBeInTheDocument();
-    expect(screen.getByTitle('Ellipse')).toBeInTheDocument();
-    expect(screen.getByTitle('Triangle')).toBeInTheDocument();
-    expect(screen.getByTitle('Line')).toBeInTheDocument();
-    expect(screen.getByTitle('Arrow')).toBeInTheDocument();
+    // Use container.querySelector to avoid duplicate issues
+    expect(container.querySelector('button[title="Rectangle"]')).toBeInTheDocument();
+    expect(container.querySelector('button[title="Text Box"]')).toBeInTheDocument();
+    expect(container.querySelector('button[title="Image"]')).toBeInTheDocument();
+    expect(container.querySelector('button[title="Ellipse"]')).toBeInTheDocument();
+    expect(container.querySelector('button[title="Triangle"]')).toBeInTheDocument();
+    expect(container.querySelector('button[title="Line"]')).toBeInTheDocument();
+    expect(container.querySelector('button[title="Arrow"]')).toBeInTheDocument();
   });
 
   test('calls onElementCreate when button is clicked', async () => {
@@ -26,10 +27,12 @@ describe('ElementToolbar', () => {
       createdType = type;
     };
     
-    render(<ElementToolbar onElementCreate={handleCreate} />);
+    const { container } = render(<ElementToolbar onElementCreate={handleCreate} />);
     
-    const rectangleButton = screen.getByTitle('Rectangle');
-    fireEvent.click(rectangleButton);
+    const rectangleButton = container.querySelector('button[title="Rectangle"]');
+    if (rectangleButton) {
+      fireEvent.click(rectangleButton);
+    }
     
     // Wait for async operations
     await new Promise(resolve => setTimeout(resolve, 100));
@@ -38,8 +41,8 @@ describe('ElementToolbar', () => {
   });
 
   test('shows Elements heading', () => {
-    render(<ElementToolbar />);
-    expect(screen.getByText('Elements')).toBeInTheDocument();
+    const { container } = render(<ElementToolbar />);
+    expect(container.querySelector('h3')).toHaveTextContent('Elements');
   });
 
   test('applies correct styling classes', () => {

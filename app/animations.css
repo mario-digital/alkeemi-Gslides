@@ -1,0 +1,442 @@
+/* Animation Framework for Alkeemi Google Slides Editor */
+/* All animations maintain 60fps with hardware acceleration */
+
+/* 1. Glow Pulse Animation - 2s ease-in-out breathing effect */
+@keyframes glowPulse {
+  0%, 100% { 
+    box-shadow: 0 0 20px rgba(168, 85, 247, 0.3);
+    opacity: 1;
+  }
+  50% { 
+    box-shadow: 0 0 30px rgba(168, 85, 247, 0.5);
+    opacity: 0.9;
+  }
+}
+
+.glow-pulse {
+  animation: glowPulse 2s ease-in-out infinite;
+  will-change: box-shadow, opacity;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* 2. Panel Slide Animation - 300ms cubic-bezier */
+.panel-slide-enter {
+  transform: translate3d(-100%, 0, 0);
+  backdrop-filter: blur(0px);
+  opacity: 0;
+}
+
+.panel-slide-enter-active {
+  transform: translate3d(0, 0, 0);
+  backdrop-filter: blur(10px);
+  opacity: 1;
+  transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform, opacity, backdrop-filter;
+}
+
+.panel-slide-exit {
+  transform: translate3d(0, 0, 0);
+  backdrop-filter: blur(10px);
+  opacity: 1;
+}
+
+.panel-slide-exit-active {
+  transform: translate3d(-100%, 0, 0);
+  backdrop-filter: blur(0px);
+  opacity: 0;
+  transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform, opacity, backdrop-filter;
+}
+
+/* Panel slide from right */
+.panel-slide-right-enter {
+  transform: translate3d(100%, 0, 0);
+  backdrop-filter: blur(0px);
+  opacity: 0;
+}
+
+.panel-slide-right-enter-active {
+  transform: translate3d(0, 0, 0);
+  backdrop-filter: blur(10px);
+  opacity: 1;
+  transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform, opacity, backdrop-filter;
+}
+
+/* 3. Validation Flash Animations - 150ms ease-out */
+@keyframes validationFlashSuccess {
+  0% { background-color: transparent; }
+  50% { background-color: rgba(6, 255, 165, 0.15); }
+  100% { background-color: transparent; }
+}
+
+@keyframes validationFlashError {
+  0% { background-color: transparent; }
+  50% { background-color: rgba(239, 68, 68, 0.15); }
+  100% { background-color: transparent; }
+}
+
+@keyframes validationFlashWarning {
+  0% { background-color: transparent; }
+  50% { background-color: rgba(245, 158, 11, 0.15); }
+  100% { background-color: transparent; }
+}
+
+.validation-flash-success {
+  animation: validationFlashSuccess 150ms ease-out;
+  will-change: background-color;
+}
+
+.validation-flash-error {
+  animation: validationFlashError 150ms ease-out;
+  will-change: background-color;
+}
+
+.validation-flash-warning {
+  animation: validationFlashWarning 150ms ease-out;
+  will-change: background-color;
+}
+
+/* 4. Hover Elevation System - 200ms ease-out */
+.hover-elevate {
+  transition: all 200ms ease-out;
+  will-change: transform, box-shadow;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+.hover-elevate:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 8px 25px rgba(168, 85, 247, 0.3);
+}
+
+/* Card specific elevation */
+.card-hover-elevate {
+  transition: all 200ms ease-out;
+  will-change: transform, box-shadow;
+  transform: translateZ(0);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.card-hover-elevate:hover {
+  transform: translateY(-4px) scale(1.01);
+  box-shadow: 
+    0 10px 30px rgba(168, 85, 247, 0.25),
+    0 0 30px rgba(168, 85, 247, 0.15);
+}
+
+/* 5. Neon Border Draw Animation - 400ms ease-in-out */
+@keyframes borderDraw {
+  0% {
+    stroke-dasharray: 0 100%;
+    stroke-dashoffset: 0;
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    stroke-dasharray: 100% 0;
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+}
+
+.neon-border-draw {
+  position: relative;
+  overflow: hidden;
+}
+
+.neon-border-draw::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  background: linear-gradient(45deg, #a855f7, #22d3ee);
+  border-radius: inherit;
+  opacity: 0;
+  animation: borderDraw 400ms ease-in-out forwards;
+  will-change: opacity;
+}
+
+.neon-border-draw::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: inherit;
+  border-radius: inherit;
+  z-index: 1;
+}
+
+.neon-border-draw > * {
+  position: relative;
+  z-index: 2;
+}
+
+/* Alternative CSS border animation */
+.neon-border-animate {
+  position: relative;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+  transition: border-color 400ms ease-in-out;
+}
+
+.neon-border-animate:focus,
+.neon-border-animate.active {
+  animation: neonBorderGlow 400ms ease-in-out;
+  border-color: #a855f7;
+  box-shadow: 
+    0 0 10px rgba(168, 85, 247, 0.5),
+    inset 0 0 10px rgba(168, 85, 247, 0.1);
+}
+
+@keyframes neonBorderGlow {
+  0% {
+    box-shadow: 0 0 0 rgba(168, 85, 247, 0);
+  }
+  50% {
+    box-shadow: 
+      0 0 20px rgba(168, 85, 247, 0.6),
+      inset 0 0 10px rgba(168, 85, 247, 0.2);
+  }
+  100% {
+    box-shadow: 
+      0 0 10px rgba(168, 85, 247, 0.5),
+      inset 0 0 10px rgba(168, 85, 247, 0.1);
+  }
+}
+
+/* 6. JSON Syntax Highlight Fade - 100ms linear */
+.syntax-highlight-transition {
+  transition: color 100ms linear, background-color 100ms linear;
+  will-change: color, background-color;
+}
+
+.syntax-keyword {
+  color: #a855f7;
+  transition: color 100ms linear;
+}
+
+.syntax-string {
+  color: #06ffa5;
+  transition: color 100ms linear;
+}
+
+.syntax-number {
+  color: #22d3ee;
+  transition: color 100ms linear;
+}
+
+.syntax-error {
+  color: #ef4444;
+  background-color: rgba(239, 68, 68, 0.1);
+  transition: all 100ms linear;
+}
+
+.syntax-highlight-success {
+  animation: syntaxSuccess 100ms linear;
+}
+
+@keyframes syntaxSuccess {
+  0% { background-color: transparent; }
+  50% { background-color: rgba(6, 255, 165, 0.1); }
+  100% { background-color: transparent; }
+}
+
+/* 7. Split Panel Resize Glow - Continuous during drag */
+.resize-handle {
+  position: relative;
+  cursor: col-resize;
+  transition: background-color 200ms ease-out;
+  will-change: box-shadow, background-color;
+}
+
+.resize-handle::before {
+  content: '';
+  position: absolute;
+  inset: -10px 0;
+  opacity: 0;
+  transition: opacity 200ms ease-out;
+  pointer-events: none;
+}
+
+.resize-handle:hover::before {
+  opacity: 1;
+  background: linear-gradient(90deg, 
+    transparent,
+    rgba(168, 85, 247, 0.1),
+    transparent
+  );
+}
+
+.resize-handle.dragging {
+  background-color: #a855f7;
+  box-shadow: 
+    0 0 20px rgba(168, 85, 247, 0.6),
+    0 0 40px rgba(168, 85, 247, 0.3);
+}
+
+.resize-handle.dragging::before {
+  opacity: 1;
+  background: linear-gradient(90deg, 
+    transparent,
+    rgba(168, 85, 247, 0.3),
+    transparent
+  );
+  animation: resizeGlowPulse 1s ease-in-out infinite;
+}
+
+@keyframes resizeGlowPulse {
+  0%, 100% {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scaleX(1.5);
+    opacity: 0.7;
+  }
+}
+
+/* 8. Element Preview Materialize - 250ms bounce */
+@keyframes elementMaterialize {
+  0% {
+    transform: scale(0) translateZ(0);
+    opacity: 0;
+    filter: blur(10px);
+  }
+  50% {
+    transform: scale(1.1) translateZ(0);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1) translateZ(0);
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+
+.element-materialize {
+  animation: elementMaterialize 250ms cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  will-change: transform, opacity, filter;
+  transform-origin: center;
+}
+
+/* Element materialize with glow */
+.element-materialize-glow {
+  animation: 
+    elementMaterialize 250ms cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards,
+    elementGlow 250ms ease-out forwards;
+  will-change: transform, opacity, filter, box-shadow;
+}
+
+@keyframes elementGlow {
+  0% {
+    box-shadow: 0 0 0 rgba(168, 85, 247, 0);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(168, 85, 247, 0.6);
+  }
+  100% {
+    box-shadow: 0 0 15px rgba(168, 85, 247, 0.3);
+  }
+}
+
+/* Performance Optimization Classes */
+.gpu-accelerated {
+  will-change: transform, opacity, box-shadow;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+.will-change-auto {
+  will-change: auto;
+}
+
+/* Accessibility - Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  /* Disable all animations */
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  
+  /* Alternative feedback for glow pulse */
+  .glow-pulse {
+    animation: none;
+    background-color: rgba(168, 85, 247, 0.1);
+    border: 2px solid rgba(168, 85, 247, 0.3);
+  }
+  
+  /* Alternative for hover elevation */
+  .hover-elevate:hover,
+  .card-hover-elevate:hover {
+    transform: none;
+    border-color: #a855f7;
+    border-width: 2px;
+    outline: 2px solid rgba(168, 85, 247, 0.3);
+    outline-offset: 2px;
+  }
+  
+  /* Alternative for validation flash */
+  .validation-flash-success {
+    animation: none;
+    border: 2px solid #06ffa5;
+    background-color: rgba(6, 255, 165, 0.1);
+  }
+  
+  .validation-flash-error {
+    animation: none;
+    border: 2px solid #ef4444;
+    background-color: rgba(239, 68, 68, 0.1);
+  }
+  
+  .validation-flash-warning {
+    animation: none;
+    border: 2px solid #f59e0b;
+    background-color: rgba(245, 158, 11, 0.1);
+  }
+  
+  /* Alternative focus indicators */
+  .neon-border-draw:focus,
+  .neon-border-animate:focus {
+    animation: none;
+    outline: 3px solid #a855f7;
+    outline-offset: 2px;
+    box-shadow: none;
+  }
+  
+  /* Keep essential visual feedback */
+  .focus-alternative {
+    outline: 3px solid #a855f7;
+    outline-offset: 2px;
+  }
+}
+
+/* Additional utility classes for animations */
+.transition-all-200 {
+  transition: all 200ms ease-out;
+}
+
+.transition-all-300 {
+  transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.transition-colors-100 {
+  transition: color 100ms linear, background-color 100ms linear;
+}
+
+.animation-delay-100 {
+  animation-delay: 100ms;
+}
+
+.animation-delay-200 {
+  animation-delay: 200ms;
+}
+
+.animation-delay-300 {
+  animation-delay: 300ms;
+}
