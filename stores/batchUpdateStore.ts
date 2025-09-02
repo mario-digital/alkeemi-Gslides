@@ -12,10 +12,14 @@ interface BatchUpdateState {
   operations: BatchUpdateOperation[]
   selectedOperationIndex: number | null
   selectedElement: SelectedElement | null
+  selectedOperationId: string | null
+  selectedElementId: string | null
   presentationId: string
   undoStack: BatchUpdateOperation[][]
   redoStack: BatchUpdateOperation[][]
   isDirty: boolean
+  validationErrors: Record<string, string[]>
+  globalValidationState: 'valid' | 'invalid' | 'warning'
   
   addOperation: (operation: BatchUpdateOperation) => void
   addRequest: (request: any) => void
@@ -24,6 +28,10 @@ interface BatchUpdateState {
   reorderOperations: (fromIndex: number, toIndex: number) => void
   selectOperation: (index: number | null) => void
   selectElement: (element: SelectedElement | null) => void
+  selectByIds: (operationId: string | null, elementId: string | null) => void
+  syncSelection: (source: 'operation' | 'element', id: string | null) => void
+  setValidationErrors: (errors: Record<string, string[]>) => void
+  setGlobalValidationState: (state: 'valid' | 'invalid' | 'warning') => void
   clearOperations: () => void
   setPresentationId: (id: string) => void
   getBatchUpdateRequest: () => BatchUpdateRequest
@@ -39,10 +47,14 @@ export const useBatchUpdateStore = create<BatchUpdateState>()(
       operations: [],
       selectedOperationIndex: null,
       selectedElement: null,
+      selectedOperationId: null,
+      selectedElementId: null,
       presentationId: '',
       undoStack: [],
       redoStack: [],
       isDirty: false,
+      validationErrors: {},
+      globalValidationState: 'valid',
 
       addOperation: (operation) => {
         const { operations, undoStack } = get();
@@ -114,8 +126,34 @@ export const useBatchUpdateStore = create<BatchUpdateState>()(
       selectElement: (element) =>
         set({ selectedElement: element }),
 
+      selectByIds: (operationId, elementId) =>
+        set({ selectedOperationId: operationId, selectedElementId: elementId }),
+
+      syncSelection: (source, id) => {
+        if (source === 'operation') {
+          set({ selectedOperationId: id, selectedElementId: id });
+        } else {
+          set({ selectedElementId: id, selectedOperationId: id });
+        }
+      },
+
+      setValidationErrors: (errors) =>
+        set({ validationErrors: errors }),
+
+      setGlobalValidationState: (state) =>
+        set({ globalValidationState: state }),
+
       clearOperations: () =>
-        set({ operations: [], selectedOperationIndex: null, selectedElement: null, isDirty: false }),
+        set({ 
+          operations: [], 
+          selectedOperationIndex: null, 
+          selectedElement: null,
+          selectedOperationId: null,
+          selectedElementId: null,
+          isDirty: false,
+          validationErrors: {},
+          globalValidationState: 'valid'
+        }),
 
       setPresentationId: (id) =>
         set({ presentationId: id }),
