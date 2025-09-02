@@ -1,0 +1,289 @@
+{
+  "requests": [
+    {
+      "createTextBox": {
+        "objectId": "textbox-1",
+        "elementProperties": {
+          "pageObjectId": "slide-1",
+          "size": {
+            "width": {
+              "magnitude": 2286000,
+              "unit": "EMU"
+            },
+            "height": {
+              "magnitude": 914400,
+              "unit": "EMU"
+            }
+          },
+          "transform": {
+            "scaleX": 1,
+            "scaleY": 1,
+            "translateX": 1524000,
+            "translateY": 1524000,
+            "unit": "EMU"
+          }
+        },
+        "text": "Welcome to the Presentation"
+      }
+    },
+    {
+      "createShape": {
+        "objectId": "shape-circle-1",
+        "shapeType": "ELLIPSE",
+        "elementProperties": {
+          "pageObjectId": "slide-1",
+          "size": {
+            "width": {
+              "magnitude": 1524000,
+              "unit": "EMU"
+            },
+            "height": {
+              "magnitude": 1524000,
+              "unit": "EMU"
+            }
+          },
+          "transform": {
+            "scaleX": 1,
+            "scaleY": 1,
+            "translateX": 5334000,
+            "translateY": 914400,
+            "unit": "EMU"
+          }
+        },
+        "shapeProperties": {
+          "shapeBackgroundFill": {
+            "solidFill": {
+              "color": {
+                "rgbColor": {
+                  "red": 0.2,
+                  "green": 0.8,
+                  "blue": 0.6
+                }
+              },
+              "alpha": 0.9
+            }
+          }
+        }
+      }
+    },
+    {
+      "createShape": {
+        "objectId": "shape-rect-1",
+        "shapeType": "RECTANGLE",
+        "elementProperties": {
+          "pageObjectId": "slide-1",
+          "size": {
+            "width": {
+              "magnitude": 3048000,
+              "unit": "EMU"
+            },
+            "height": {
+              "magnitude": 762000,
+              "unit": "EMU"
+            }
+          },
+          "transform": {
+            "scaleX": 1,
+            "scaleY": 1,
+            "translateX": 914400,
+            "translateY": 3810000,
+            "unit": "EMU"
+          }
+        },
+        "shapeProperties": {
+          "shapeBackgroundFill": {
+            "solidFill": {
+              "color": {
+                "rgbColor": {
+                  "red": 0.9,
+                  "green": 0.3,
+                  "blue": 0.5
+                }
+              },
+              "alpha": 0.8
+            }
+          }
+        }
+      }
+    },
+    {
+      "createTextBox": {
+        "objectId": "textbox-2",
+        "elementProperties": {
+          "pageObjectId": "slide-2",
+          "size": {
+            "width": {
+              "magnitude": 3810000,
+              "unit": "EMU"
+            },
+            "height": {
+              "magnitude": 1270000,
+              "unit": "EMU"
+            }
+          },
+          "transform": {
+            "scaleX": 1,
+            "scaleY": 1,
+            "translateX": 2286000,
+            "translateY": 2540000,
+            "unit": "EMU"
+          }
+        },
+        "text": "This is a test import with multiple elements"
+      }
+    },
+    {
+      "createShape": {
+        "objectId": "shape-triangle-1",
+        "shapeType": "TRIANGLE",
+        "elementProperties": {
+          "pageObjectId": "slide-2",
+          "size": {
+            "width": {
+              "magnitude": 1905000,
+              "unit": "EMU"
+            },
+            "height": {
+              "magnitude": 1905000,
+              "unit": "EMU"
+            }
+          },
+          "transform": {
+            "scaleX": 1,
+            "scaleY": 1,
+            "translateX": 457200,
+            "translateY": 457200,
+            "unit": "EMU"
+          }
+        },
+        "shapeProperties": {
+          "shapeBackgroundFill": {
+            "solidFill": {
+              "color": {
+                "rgbColor": {
+                  "red": 0.5,
+                  "green": 0.3,
+                  "blue": 0.9
+                }
+              },
+              "alpha": 0.7
+            }
+          }
+        }
+      }
+    },
+    {
+      "updateShapeProperties": {
+        "objectId": "shape-circle-1",
+        "shapeProperties": {
+          "shapeBackgroundFill": {
+            "solidFill": {
+              "color": {
+                "rgbColor": {
+                  "red": 1.0,
+                  "green": 0.8,
+                  "blue": 0.0
+                }
+              },
+              "alpha": 1.0
+            }
+          }
+        },
+        "fields": "shapeBackgroundFill"
+      }
+    },
+    {
+      "deleteObject": {
+        "objectId": "old-element-1"
+      }
+    },
+    {
+      "createTextBox": {
+        "objectId": "footer-text",
+        "elementProperties": {
+          "pageObjectId": "slide-3",
+          "size": {
+            "width": {
+              "magnitude": 4572000,
+              "unit": "EMU"
+            },
+            "height": {
+              "magnitude": 508000,
+              "unit": "EMU"
+            }
+          },
+          "transform": {
+            "scaleX": 1,
+            "scaleY": 1,
+            "translateX": 1778000,
+            "translateY": 4318000,
+            "unit": "EMU"
+          }
+        },
+        "text": "© 2024 Test Presentation - Page 3"
+      }
+    },
+    {
+      "createShape": {
+        "objectId": "shape-star-1",
+        "shapeType": "STAR_5",
+        "elementProperties": {
+          "pageObjectId": "slide-3",
+          "size": {
+            "width": {
+              "magnitude": 2032000,
+              "unit": "EMU"
+            },
+            "height": {
+              "magnitude": 2032000,
+              "unit": "EMU"
+            }
+          },
+          "transform": {
+            "scaleX": 1,
+            "scaleY": 1,
+            "translateX": 3302000,
+            "translateY": 1016000,
+            "unit": "EMU"
+          }
+        },
+        "shapeProperties": {
+          "shapeBackgroundFill": {
+            "solidFill": {
+              "color": {
+                "rgbColor": {
+                  "red": 1.0,
+                  "green": 0.6,
+                  "blue": 0.0
+                }
+              },
+              "alpha": 0.85
+            }
+          }
+        }
+      }
+    },
+    {
+      "updateTextStyle": {
+        "objectId": "textbox-1",
+        "style": {
+          "bold": true,
+          "fontSize": {
+            "magnitude": 24,
+            "unit": "PT"
+          },
+          "foregroundColor": {
+            "opaqueColor": {
+              "rgbColor": {
+                "red": 0.0,
+                "green": 0.5,
+                "blue": 0.8
+              }
+            }
+          }
+        },
+        "fields": "bold,fontSize,foregroundColor"
+      }
+    }
+  ]
+}

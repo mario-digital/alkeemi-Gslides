@@ -50,11 +50,12 @@ export class RenderEngine {
     this.viewport = config;
   }
 
-  render(operations: BatchUpdateOperation[], selectedObjectId?: string) {
+  render(operations: BatchUpdateOperation[], selectedObjectId?: string, hoveredObjectId?: string) {
     console.log('RenderEngine.render called with:', {
       operationsCount: operations.length,
       operations,
-      selectedObjectId
+      selectedObjectId,
+      hoveredObjectId
     });
     
     if (this.animationFrame) {
@@ -68,7 +69,7 @@ export class RenderEngine {
 
       operations.forEach(operation => {
         console.log('Processing operation:', operation);
-        this.renderOperation(operation, selectedObjectId);
+        this.renderOperation(operation, selectedObjectId, hoveredObjectId);
       });
 
       this.animationFrame = null;
@@ -101,12 +102,14 @@ export class RenderEngine {
     this.ctx.restore();
   }
 
-  private renderOperation(operation: BatchUpdateOperation, selectedObjectId?: string) {
+  private renderOperation(operation: BatchUpdateOperation, selectedObjectId?: string, hoveredObjectId?: string) {
     console.log('renderOperation called with:', operation);
     
     if ('createShape' in operation) {
       console.log('Rendering createShape');
-      this.renderShape(operation.createShape, selectedObjectId === operation.createShape.objectId);
+      const isSelected = selectedObjectId === operation.createShape.objectId;
+      const isHovered = hoveredObjectId === operation.createShape.objectId;
+      this.renderShape(operation.createShape, isSelected, isHovered);
     } else if ('createTextBox' in operation) {
       console.log('Rendering createTextBox');
       // TextBox is rendered as a shape with TEXT_BOX type
@@ -116,10 +119,14 @@ export class RenderEngine {
         text: operation.createTextBox.text || '' // Ensure text is included
       };
       console.log('TextBox object created:', textBox);
-      this.renderShape(textBox, selectedObjectId === operation.createTextBox.objectId);
+      const isSelected = selectedObjectId === operation.createTextBox.objectId;
+      const isHovered = hoveredObjectId === operation.createTextBox.objectId;
+      this.renderShape(textBox, isSelected, isHovered);
     } else if ('createImage' in operation) {
       console.log('Rendering createImage');
-      this.renderImage(operation.createImage, selectedObjectId === operation.createImage.objectId);
+      const isSelected = selectedObjectId === operation.createImage.objectId;
+      const isHovered = hoveredObjectId === operation.createImage.objectId;
+      this.renderImage(operation.createImage, isSelected, isHovered);
     } else if ('insertText' in operation) {
       console.log('insertText operation (not rendered)');
       // Text rendering handled with shapes
@@ -128,9 +135,9 @@ export class RenderEngine {
     }
   }
 
-  private renderShape(shape: any, isSelected: boolean) {
+  private renderShape(shape: any, isSelected: boolean, isHovered: boolean = false) {
     try {
-      console.log('renderShape called with:', shape, 'isSelected:', isSelected);
+      console.log('renderShape called with:', shape, 'isSelected:', isSelected, 'isHovered:', isHovered);
       
       const { scale, offsetX, offsetY } = this.viewport;
       const slideWidthPx = ptToPixels(SLIDE_WIDTH_PT) * scale;
@@ -319,6 +326,12 @@ export class RenderEngine {
       }
     }
 
+    // Draw hover highlight
+    if (isHovered && !isSelected) {
+      this.drawHoverOverlay(x, y, width, height);
+    }
+    
+    // Draw selection overlay
     if (isSelected) {
       this.drawSelectionOverlay(x, y, width, height);
     }
@@ -330,7 +343,7 @@ export class RenderEngine {
     }
   }
 
-  private renderImage(image: any, isSelected: boolean) {
+  private renderImage(image: any, isSelected: boolean, isHovered: boolean = false) {
     const { scale, offsetX, offsetY } = this.viewport;
     const slideWidthPx = ptToPixels(SLIDE_WIDTH_PT) * scale;
     const slideHeightPx = ptToPixels(SLIDE_HEIGHT_PT) * scale;
@@ -382,6 +395,12 @@ export class RenderEngine {
     this.ctx.textBaseline = 'middle';
     this.ctx.fillText('Image Placeholder', x + width/2, y + height/2);
     
+    // Draw hover highlight
+    if (isHovered && !isSelected) {
+      this.drawHoverOverlay(x, y, width, height);
+    }
+    
+    // Draw selection overlay
     if (isSelected) {
       this.drawSelectionOverlay(x, y, width, height);
     }
@@ -389,6 +408,29 @@ export class RenderEngine {
     this.ctx.restore();
   }
 
+  private drawHoverOverlay(x: number, y: number, width: number, height: number) {
+    const { scale } = this.viewport;
+    
+    // Draw a pulsing cyan glow effect for hover
+    this.ctx.save();
+    
+    // Outer glow
+    this.ctx.shadowColor = 'rgba(6, 255, 165, 0.8)';
+    this.ctx.shadowBlur = 20 * scale;
+    this.ctx.strokeStyle = 'rgba(6, 255, 165, 0.6)';
+    this.ctx.lineWidth = 3 * scale;
+    this.ctx.setLineDash([]);
+    this.ctx.strokeRect(x - 1, y - 1, width + 2, height + 2);
+    
+    // Inner highlight
+    this.ctx.shadowBlur = 0;
+    this.ctx.strokeStyle = 'rgba(6, 255, 165, 0.3)';
+    this.ctx.lineWidth = 1 * scale;
+    this.ctx.strokeRect(x, y, width, height);
+    
+    this.ctx.restore();
+  }
+  
   private drawSelectionOverlay(x: number, y: number, width: number, height: number) {
     const { scale } = this.viewport;
     

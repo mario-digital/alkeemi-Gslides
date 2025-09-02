@@ -114,6 +114,9 @@ export default function EditorPage() {
             onOperationSelect={(opData) => {
               setSelectedOperationId(opData.id === selectedOperationId ? null : opData.id)
             }}
+            onOperationHover={(objectId) => {
+              useBatchUpdateStore.getState().setHoveredElement(objectId)
+            }}
             onOperationEdit={(opData) => {
               const index = parseInt(opData.id.split('_')[1])
               handleEditOperation(index)

@@ -13,6 +13,7 @@ interface OperationsListProps {
   onOperationEdit?: (operation: OperationData) => void
   onOperationDelete?: (id: string) => void
   onOperationSelect?: (operation: OperationData) => void
+  onOperationHover?: (objectId: string | null) => void
   onReorder?: (operations: OperationData[]) => void
 }
 
@@ -23,6 +24,7 @@ const OperationsList: React.FC<OperationsListProps> = ({
   onOperationEdit,
   onOperationDelete,
   onOperationSelect,
+  onOperationHover,
 }) => {
   const containerRef = React.useRef<HTMLDivElement>(null)
   const [isVirtualized, setIsVirtualized] = React.useState(false)
@@ -77,53 +79,62 @@ const OperationsList: React.FC<OperationsListProps> = ({
       </div>
 
       <ScrollArea 
-        className="flex-1 p-4"
+        className="flex-1"
         onScroll={handleScroll}
         ref={containerRef}
       >
-        <div 
-          className="space-y-3"
-          style={{
-            height: virtualHeight,
-            position: 'relative',
-          }}
-        >
-          <div
+        <div className="px-4 py-4">
+          <div 
+            className="space-y-3"
             style={{
-              transform: `translateY(${virtualOffset}px)`,
+              height: virtualHeight,
+              position: 'relative',
             }}
           >
-            {visibleOperations.map((operation, index) => {
-              const actualIndex = isVirtualized 
-                ? visibleRange.start + index 
-                : index
+            <div
+              style={{
+                transform: `translateY(${virtualOffset}px)`,
+              }}
+            >
+              {visibleOperations.map((operation, index) => {
+                const actualIndex = isVirtualized 
+                  ? visibleRange.start + index 
+                  : index
 
-              return (
-                <OperationCard
-                  key={operation.id}
-                  operation={operation}
-                  index={actualIndex}
-                  isSelected={selectedOperationId === operation.id}
-                  onEdit={onOperationEdit}
-                  onDelete={onOperationDelete}
-                  onSelect={onOperationSelect}
-                  className="mb-3"
-                />
-              )
-            })}
-          </div>
-        </div>
-
-        {operations.length === 0 && (
-          <div className="flex flex-col items-center justify-center h-64 text-center">
-            <div className="p-4 rounded-lg bg-bg-tertiary/30">
-              <p className="text-text-secondary">No operations yet</p>
-              <p className="text-sm text-text-tertiary mt-2">
-                Click the + button to add your first operation
-              </p>
+                return (
+                  <div key={operation.id} className="px-2">
+                    <OperationCard
+                      operation={operation}
+                      index={actualIndex}
+                      isSelected={selectedOperationId === operation.id}
+                      onEdit={onOperationEdit}
+                      onDelete={onOperationDelete}
+                      onSelect={onOperationSelect}
+                      onHover={onOperationHover}
+                      className="mb-3"
+                    />
+                  </div>
+                )
+              })}
             </div>
           </div>
-        )}
+
+          {/* Bottom spacer to ensure last card is visible above footer */}
+          {operations.length > 0 && (
+            <div className="h-20" />
+          )}
+
+          {operations.length === 0 && (
+            <div className="flex flex-col items-center justify-center h-64 text-center">
+              <div className="p-4 rounded-lg bg-bg-tertiary/30">
+                <p className="text-text-secondary">No operations yet</p>
+                <p className="text-sm text-text-tertiary mt-2">
+                  Click the + button to add your first operation
+                </p>
+              </div>
+            </div>
+          )}
+        </div>
       </ScrollArea>
 
       {isVirtualized && (

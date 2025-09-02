@@ -14,6 +14,7 @@ interface BatchUpdateState {
   selectedElement: SelectedElement | null
   selectedOperationId: string | null
   selectedElementId: string | null
+  hoveredElementId: string | null
   presentationId: string
   undoStack: BatchUpdateOperation[][]
   redoStack: BatchUpdateOperation[][]
@@ -30,6 +31,7 @@ interface BatchUpdateState {
   selectElement: (element: SelectedElement | null) => void
   selectByIds: (operationId: string | null, elementId: string | null) => void
   syncSelection: (source: 'operation' | 'element', id: string | null) => void
+  setHoveredElement: (elementId: string | null) => void
   setValidationErrors: (errors: Record<string, string[]>) => void
   setGlobalValidationState: (state: 'valid' | 'invalid' | 'warning') => void
   clearOperations: () => void
@@ -49,6 +51,7 @@ export const useBatchUpdateStore = create<BatchUpdateState>()(
       selectedElement: null,
       selectedOperationId: null,
       selectedElementId: null,
+      hoveredElementId: null,
       presentationId: '',
       undoStack: [],
       redoStack: [],
@@ -136,6 +139,9 @@ export const useBatchUpdateStore = create<BatchUpdateState>()(
           set({ selectedElementId: id, selectedOperationId: id });
         }
       },
+
+      setHoveredElement: (elementId) =>
+        set({ hoveredElementId: elementId }),
 
       setValidationErrors: (errors) =>
         set({ validationErrors: errors }),

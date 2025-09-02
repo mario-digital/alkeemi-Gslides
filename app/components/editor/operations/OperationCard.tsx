@@ -76,6 +76,7 @@ export interface OperationCardProps
   onEdit?: (operation: OperationData) => void
   onDelete?: (id: string) => void
   onSelect?: (operation: OperationData) => void
+  onHover?: (objectId: string | null) => void
 }
 
 const OperationCard = React.forwardRef<HTMLDivElement, OperationCardProps>(
@@ -86,6 +87,7 @@ const OperationCard = React.forwardRef<HTMLDivElement, OperationCardProps>(
     onEdit,
     onDelete,
     onSelect,
+    onHover,
     isDragging = false,
     isDragOver = false,
     isSelected = false,
@@ -110,6 +112,8 @@ const OperationCard = React.forwardRef<HTMLDivElement, OperationCardProps>(
         style={{
           animationDelay: `${index * 50}ms`,
         }}
+        onMouseEnter={() => onHover?.(operation.objectId || null)}
+        onMouseLeave={() => onHover?.(null)}
         {...props}
       >
         <div

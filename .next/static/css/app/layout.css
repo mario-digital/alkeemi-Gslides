@@ -761,6 +761,9 @@ code, pre{
 .pointer-events-auto{
   pointer-events: auto;
 }
+.visible{
+  visibility: visible;
+}
 .invisible{
   visibility: hidden;
 }

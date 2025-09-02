@@ -27,7 +27,7 @@ export function SlidePreviewRenderer({
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [renderEngine, setRenderEngine] = useState<RenderEngine | null>(null);
-  const { operations, selectedElement } = useBatchUpdateStore();
+  const { operations, selectedElement, hoveredElementId } = useBatchUpdateStore();
   const [viewport, setViewport] = useState({ x: 0, y: 0, scale: 1 });
   const [containerSize, setContainerSize] = useState({ width: 960, height: 540 });
   const [isDragging, setIsDragging] = useState(false);
@@ -83,10 +83,10 @@ export function SlidePreviewRenderer({
         offsetY: viewport.y
       });
 
-      // Force immediate render
-      renderEngine.render(operations, selectedElement?.objectId);
+      // Force immediate render with hover support
+      renderEngine.render(operations, selectedElement?.objectId, hoveredElementId);
     }
-  }, [renderEngine, operations, selectedElement, canvasWidth, canvasHeight, scale, viewport, operations.length]); // Added operations.length as additional trigger
+  }, [renderEngine, operations, selectedElement, hoveredElementId, canvasWidth, canvasHeight, scale, viewport, operations.length]); // Added operations.length as additional trigger
 
   const handleCanvasClick = (e: React.MouseEvent<HTMLCanvasElement>) => {
     if (!renderEngine || !canvasRef.current || isDragging) return;
