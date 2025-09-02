@@ -267,4 +267,86 @@
   .large-text h3 { font-size: 2rem; }
   .large-text p { font-size: 1.125rem; }
   .large-text small { font-size: 1rem; }
+
+  /* Operations List Animations */
+  .animate-slide-in-left {
+    animation: slide-in-left 300ms ease-out forwards;
+    opacity: 0;
+  }
+
+  @keyframes slide-in-left {
+    from {
+      transform: translateX(-20px);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes glow {
+    0%, 100% {
+      opacity: 0.5;
+    }
+    50% {
+      opacity: 1;
+    }
+  }
+
+  @keyframes glow-pulse {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
+    }
+  }
+
+  /* Shadow and glow utilities for cards */
+  .shadow-glow {
+    box-shadow: 0 0 20px rgba(168, 85, 247, 0.3);
+  }
+
+  .shadow-glow-error {
+    box-shadow: 0 0 20px rgba(239, 68, 68, 0.3);
+  }
+
+  .shadow-glow-success {
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+  }
+
+  .shadow-glow-border {
+    box-shadow: 0 0 20px rgba(168, 85, 247, 0.1), inset 0 0 20px rgba(168, 85, 247, 0.05);
+  }
+
+  /* Operation type colors */
+  .operation-create {
+    --operation-color: #06ffa5;
+  }
+
+  .operation-update {
+    --operation-color: #22d3ee;
+  }
+
+  .operation-delete {
+    --operation-color: #ec4899;
+  }
+
+  .operation-transform {
+    --operation-color: #a855f7;
+  }
+
+  .operation-text {
+    --operation-color: #fbbf24;
+  }
+
+  /* Drag active states */
+  .drag-active {
+    background-color: rgba(168, 85, 247, 0.6);
+  }
+
+  .drop-zone {
+    background-color: rgba(6, 255, 165, 0.3);
+  }
 }
